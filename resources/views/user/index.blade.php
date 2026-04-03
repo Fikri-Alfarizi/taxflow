@@ -10,8 +10,51 @@
 @endsection
 
 @section('content')
+<!-- High-Density Search & Filter Header -->
+<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-4 mb-6 transition-all mt-2">
+    <form action="{{ route('user.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+        <div class="md:col-span-4">
+            <label class="block text-[8px] font-black text-slate-300 dark:text-slate-500 uppercase tracking-[0.2em] mb-1.5 leading-none">Pencarian Universal</label>
+            <div class="relative">
+                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-500"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau email..."
+                    class="w-full pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg text-[11px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-50 dark:focus:ring-blue-900/20 focus:bg-white dark:focus:bg-slate-900 transition-all">
+            </div>
+        </div>
+
+        <div class="md:col-span-2 hidden md:block">
+            <label class="block text-[8px] font-black text-slate-300 dark:text-slate-500 uppercase tracking-[0.2em] mb-1.5 leading-none">Hak Akses</label>
+            <div class="relative">
+                <select name="role" class="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg text-[11px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none transition-all appearance-none uppercase">
+                    <option value="">SEMUA PERAN</option>
+                    <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>ADMINISTRATOR</option>
+                    <option value="staff" {{ request('role') == 'staff' ? 'selected' : '' }}>STAFF_TAX</option>
+                </select>
+                <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+            </div>
+        </div>
+
+        <div class="md:col-span-2 hidden md:block">
+            <label class="block text-[8px] font-black text-slate-300 dark:text-slate-500 uppercase tracking-[0.2em] mb-1.5 leading-none">Status Akun</label>
+            <div class="relative">
+                <select name="status" class="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg text-[11px] font-bold text-slate-800 dark:text-slate-200 focus:outline-none transition-all appearance-none uppercase">
+                    <option value="">SEMUA STATUS</option>
+                    <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>AKTIF</option>
+                    <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>SUSPENDED</option>
+                </select>
+                <i class="ph ph-caret-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+            </div>
+        </div>
+
+        <div class="md:col-span-4 flex gap-2">
+            <button type="submit" class="flex-1 px-4 py-1.5 bg-slate-800 dark:bg-slate-700 text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-md">Terapkan Filter</button>
+            <a href="{{ route('user.index') }}" wire:navigate class="px-4 py-1.5 bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-800 transition-all text-center flex items-center justify-center">Reset</a>
+        </div>
+    </form>
+</div>
+
 <!-- User List Card -->
-<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden mt-2 transition-all">
+<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all">
     <div class="overflow-x-auto scrollbar-hide">
         <table class="w-full text-sm">
             <thead>

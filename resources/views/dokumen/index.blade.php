@@ -78,8 +78,8 @@
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                         <div class="flex items-center justify-end gap-1">
-                            <a href="{{ Storage::url($doc->file_dokumen) }}" target="_blank" class="p-2 text-slate-300 dark:text-slate-600 hover:text-blue-600 transition-all" title="Download">
-                                <i class="ph ph-download-simple text-xl"></i>
+                            <a href="{{ $doc->file_url }}" target="_blank" class="p-2 text-slate-300 dark:text-slate-600 hover:text-blue-600 transition-all {{ $doc->is_remote ? 'bg-blue-50/50 rounded-lg' : '' }}" title="{{ $doc->is_remote ? 'Open API Link' : 'Download Local' }}">
+                                <i class="ph {{ $doc->is_remote ? 'ph-arrow-square-out' : 'ph-download-simple' }} text-xl"></i>
                             </a>
                             <button @click="confirmDelete('{{ route('dokumen.destroy', $doc->id) }}', '{{ $doc->nama_dokumen }}')" class="p-2 text-slate-300 dark:text-slate-600 hover:text-rose-600 transition-all" title="Hapus Dokumen">
                                 <i class="ph ph-trash text-xl"></i>

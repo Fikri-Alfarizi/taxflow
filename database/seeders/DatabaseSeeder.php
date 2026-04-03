@@ -32,6 +32,10 @@ class DatabaseSeeder extends Seeder
                 'role' => 'staff',
             ]
         );
+
+        // Generate 98 more Staff Users for scaling (Total 100)
+        echo "Generating 98 additional staff users...\n";
+        User::factory()->count(98)->create(['role' => 'staff']);
         $this->call([
             PajakSeeder::class,
         ]);

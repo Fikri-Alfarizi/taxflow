@@ -14,12 +14,28 @@ class Dokumen extends Model
         'tanggal_upload',
     ];
 
+    protected $appends = ['file_url', 'is_remote'];
+    
     public function getHumanSizeAttribute()
     {
-        $size = $this->ukuran_file;
+        $size = (float) $this->ukuran_file;
+        if ($size <= 0) return '0 B';
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        for ($i = 0; $size > 1024; $i++) { $size /= 1024; }
+        for ($i = 0; $size >= 1024 && $i < count($units) - 1; $i++) { $size /= 1024; }
         return round($size, 2) . ' ' . $units[$i];
+    }
+
+    public function getFileUrlAttribute()
+    {
+        if (filter_var($this->file_dokumen, FILTER_VALIDATE_URL)) {
+            return $this->file_dokumen;
+        }
+        return \Illuminate\Support\Facades\Storage::url($this->file_dokumen);
+    }
+
+    public function getIsRemoteAttribute()
+    {
+        return filter_var($this->file_dokumen, FILTER_VALIDATE_URL);
     }
 
     public function pajak()

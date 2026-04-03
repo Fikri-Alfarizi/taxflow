@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/api/dashboard/stats', [\App\Http\Controllers\Api\DashboardStatsController::class, 'index'])->name('api.dashboard.stats');
     Route::get('/api/notifications', [\App\Http\Controllers\Api\NotificationController::class, 'index'])->name('api.notifications');
+    Route::get('/api/monitoring/updates', [\App\Http\Controllers\Api\MonitoringApiController::class, 'latest'])->name('api.monitoring.updates');
     Route::post('/pajak/sync', [PajakController::class, 'sync'])->name('pajak.sync');
     
     Route::get('/pajak/export', [PajakController::class, 'export'])->name('pajak.export');

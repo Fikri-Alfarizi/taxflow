@@ -20,15 +20,9 @@
         }
         .header-cell { display: table-cell; vertical-align: middle; }
         .logo { 
-            width: 40px; 
-            height: 40px; 
-            background-color: #2563eb; 
-            color: white; 
-            text-align: center; 
-            line-height: 40px; 
-            font-weight: bold; 
-            border-radius: 8px; 
-            font-size: 18pt;
+            width: 50px; 
+            height: 50px; 
+            object-fit: contain;
         }
         .title { font-size: 18pt; font-weight: bold; color: #1e293b; margin: 0; }
         .subtitle { font-size: 9pt; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
@@ -86,8 +80,8 @@
 </head>
 <body>
     <div class="header">
-        <div class="header-cell" style="width: 50px;">
-            <div class="logo">T</div>
+        <div class="header-cell" style="width: 60px;">
+            <img src="{{ public_path('logo/logo_original.png') }}" class="logo" alt="Logo">
         </div>
         <div class="header-cell">
             <h1 class="title">Laporan Analitik Resmi</h1>

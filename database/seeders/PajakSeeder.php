@@ -12,8 +12,9 @@ class PajakSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get an admin user for attribution
-        $user = User::first() ?? User::factory()->create();
+        // Get all users for distribution
+        $userIds = User::pluck('id')->toArray();
+        $apiService = new \App\Services\TaxApiService();
 
         $companies = [
             ['name' => 'PT Bank Mandiri', 'logo' => '/logos/mandiri.png', 'kpp' => 'KPP Wajib Pajak Besar Satu'],
@@ -30,22 +31,23 @@ class PajakSeeder extends Seeder
         $statuses = ['diproses', 'selesai', 'terlambat'];
         $categories = ['Perbankan', 'Telekomunikasi', 'Manufaktur', 'Teknologi', 'Energi', 'FMCG'];
 
-        echo "Seeding 2500+ records with REAL corporate logos and DETAILED entity DNA...\n";
+        echo "Seeding 2500+ records distributed among 100 users with Digital Assets...\n";
 
         // Performance: Chunk the inserts for speed
         $data = [];
         for ($i = 1; $i <= 2500; $i++) {
             $company = $companies[array_rand($companies)];
             $status = $statuses[array_rand($statuses)];
+            $assignedUserId = $userIds[array_rand($userIds)];
             
             // Random deadline: some past, some today, some future
             $deadline = now()->addDays(rand(-30, 60));
             
-            $data[] = [
+            $pajakId = DB::table('pajaks')->insertGetId([
                 'nama_perusahaan' => $company['name'],
                 'npwp' => rand(10, 99) . '.' . rand(100, 999) . '.' . rand(100, 999) . '.' . rand(0, 9) . '-' . rand(100, 999) . '.000',
                 'alamat_lengkap' => 'Jl. Jenderal Sudirman No. ' . rand(1, 100) . ', Jakarta Pusat, DKI Jakarta',
-                'nama_pic' => 'Budi ' . Str::random(5),
+                'nama_pic' => 'Petugas ' . Str::random(5),
                 'kontak_pic' => '08' . rand(111111111, 999999999),
                 'email_pic' => 'pic.' . strtolower(Str::random(5)) . '@' . strtolower(str_replace(' ', '', $company['name'])) . '.com',
                 'kpp_pratama' => $company['kpp'],
@@ -53,24 +55,35 @@ class PajakSeeder extends Seeder
                 'id_transaksi_source' => 'TX-' . strtoupper(Str::random(8)),
                 'logo_url' => $company['logo'],
                 'jenis_pajak' => $taxTypes[array_rand($taxTypes)],
-                'periode' => 'March 2026',
+                'periode' => date('F Y', strtotime("-" . rand(0, 5) . " month")),
                 'tanggal_input' => now(),
                 'tanggal_jatuh_tempo' => $deadline,
                 'status' => $status,
-                'user_id' => $user->id,
+                'user_id' => $assignedUserId,
                 'created_at' => now(),
                 'updated_at' => now(),
-            ];
+            ]);
 
-            if (count($data) >= 500) {
-                DB::table('pajaks')->insert($data);
-                $data = [];
-                echo "Inserted " . ($i) . " records...\n";
+            // Seed 1-3 documents for every 2nd tax record
+            if ($i % 2 == 0) {
+                $docs = $apiService->generateMockDocuments($pajakId, rand(1, 3));
+                DB::table('dokumens')->insert($docs);
             }
-        }
 
-        if (!empty($data)) {
-            DB::table('pajaks')->insert($data);
+            // [NEW] Seed 1-2 initial monitoring logs per record
+            DB::table('monitorings')->insert([
+                'pajak_id' => $pajakId,
+                'user_id' => $assignedUserId,
+                'status_proses' => $status,
+                'catatan' => 'Sistem automasi: Data pertama (' . $status . ') untuk entitas ' . $company['name'] . '.',
+                'tanggal_update' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            if ($i % 500 == 0) {
+                echo "Processed " . ($i) . " entities with their digital assets...\n";
+            }
         }
 
         echo "Seeding completed successfully.\n";

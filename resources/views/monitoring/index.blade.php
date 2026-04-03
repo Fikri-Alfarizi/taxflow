@@ -4,6 +4,24 @@
 @section('page-title', 'Log Aktivitas & Monitoring')
 
 @section('content')
+<div x-data="{ 
+    monitorings: [],
+    latestId: {{ $monitorings->first() ? $monitorings->first()->id : 0 }},
+    isPaused: false,
+    async fetchUpdates() {
+        if (this.isPaused) return;
+        try {
+            const response = await fetch(`{{ route('api.monitoring.updates') }}?after_id=${this.latestId}`);
+            const data = await response.json();
+            if (data.updates && data.updates.length > 0) {
+                this.monitorings = [...data.updates, ...this.monitorings];
+                this.latestId = data.latest_id;
+            }
+        } catch (error) {
+            console.error('Telemetri Error:', error);
+        }
+    }
+}" x-init="setInterval(() => fetchUpdates(), 5000)" class="space-y-6">
 <!-- Filter Section -->
 <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 lg:p-6 mb-6 mt-2 transition-all duration-300">
     <form action="{{ route('monitoring.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
@@ -47,6 +65,40 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50 dark:divide-slate-700 uppercase text-[9px] tracking-wide font-black transition-all duration-300">
+                <!-- Real-Time Appended Updates -->
+                <template x-for="log in monitorings" :key="log.id">
+                    <tr class="bg-blue-50/20 dark:bg-blue-900/10 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 transition-all border-l-2 border-l-blue-600 animate-pulse-once">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex flex-col">
+                                <span class="text-blue-600 dark:text-blue-400 font-black" x-text="log.audit_id"></span>
+                                <span class="text-[8px] text-slate-400 dark:text-slate-500 mt-1 tabular-nums font-bold" x-text="log.timestamp"></span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col">
+                                <a :href="log.pajak_url" class="text-blue-600 dark:text-blue-400 font-black hover:underline mb-0.5 truncate max-w-[120px] md:max-w-xs" x-text="log.perusahaan"></a>
+                                <span class="text-slate-400 dark:text-slate-500 text-[8px] font-bold">
+                                    <span x-text="log.jenis_pajak"></span> 
+                                    <span class="text-slate-200 dark:text-slate-800 mx-1">|</span> 
+                                    <span x-text="log.periode"></span>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <span class="px-2 py-0.5 rounded font-black border transition-all text-[8px]" :class="log.status_class" x-text="log.status_label"></span>
+                        </td>
+                        <td class="px-6 py-4 hidden lg:table-cell">
+                            <p class="text-slate-500 dark:text-slate-400 normal-case italic max-w-xs leading-relaxed truncate" x-text="log.catatan"></p>
+                        </td>
+                        <td class="px-6 py-4 hidden md:table-cell">
+                            <div class="flex items-center gap-2">
+                                <div class="w-5 h-5 rounded bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 flex items-center justify-center font-black text-[8px] border border-slate-200 dark:border-slate-700 shadow-sm" x-text="log.user_initial"></div>
+                                <span class="text-slate-400 dark:text-slate-600 lowercase font-bold tracking-tighter" x-text="log.user_name"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </template>
+
                 @forelse($monitorings as $log)
                 <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-all border-l-2 border-l-transparent hover:border-l-blue-600">
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -127,4 +179,22 @@
         @endif
     </div>
 </div>
+</div>
 @endsection
+
+@push('styles')
+<style>
+    @keyframes pulse-once {
+        0% { background-color: rgba(37, 99, 235, 0.1); border-left-width: 4px; }
+        100% { background-color: transparent; border-left-width: 2px; }
+    }
+    .animate-pulse-once {
+        animation: pulse-once 2s ease-out forwards;
+    }
+</style>
+@endpush
+@push('scripts')
+<script>
+    // System-wide telemetri notification could be added here
+</script>
+@endpush

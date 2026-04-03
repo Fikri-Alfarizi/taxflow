@@ -43,6 +43,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'TaxFlow') - TaxFlow Professional</title>
     
+    <!-- Comprehensive Favicon Branding -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('logo/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('logo/favicon/site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ asset('logo/favicon/favicon.ico') }}">
+    
     <!-- Zero-Latency Theme Ingestion -->
     <script>
         if (localStorage.getItem('isDark') === 'true' || (!('isDark' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -127,7 +134,10 @@
             <div class="h-14 flex items-center border-b border-slate-100 dark:border-slate-800 shrink-0 px-6 justify-between lg:justify-start"
                  :class="sidebarCollapsed ? 'lg:justify-center lg:px-0' : 'lg:px-6'">
                 <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2.5">
-                    <div class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-base shadow-lg shadow-blue-100 shrink-0">T</div>
+                    <div class="w-8 h-8 shrink-0">
+                        <img src="{{ asset('logo/logo_original.png') }}" class="w-full h-full object-contain dark:hidden" alt="TaxFlow Logo">
+                        <img src="{{ asset('logo/logo_white.png') }}" class="w-full h-full object-contain hidden dark:block" alt="TaxFlow Logo White">
+                    </div>
                     <h1 class="text-base font-black text-slate-800 dark:text-white tracking-tighter" x-show="!sidebarCollapsed || mobileSidebar">Tax<span class="text-blue-600">Flow</span></h1>
                 </a>
                 <button @click="mobileSidebar = false" class="lg:hidden text-slate-400 hover:text-rose-500 transition-colors">
@@ -196,6 +206,11 @@
                     <i class="ph ph-list text-xl"></i>
                 </button>
                 <h2 class="text-[12px] md:text-sm font-black text-slate-800 dark:text-white tracking-widest uppercase truncate max-w-[150px] md:max-w-none">@yield('page-title', 'Ringkasan Utama')</h2>
+                
+                <!-- Global Actions Yield -->
+                <div class="flex items-center gap-1 md:gap-2 border-l border-slate-100 dark:border-slate-800 ml-2 md:ml-4 pl-2 md:pl-4">
+                    @yield('actions')
+                </div>
             </div>
 
             <div class="flex items-center gap-2 lg:gap-3">

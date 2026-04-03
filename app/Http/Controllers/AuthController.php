@@ -21,13 +21,21 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        if ($user && !$user->status_aktif) {
+            return back()->withErrors([
+                'email' => 'Akun Anda sedang ditangguhkan. Silakan hubungi administrator.',
+            ])->onlyInput('email');
+        }
+
         if (auth()->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Informasi akun yang Anda masukkan tidak sesuai di sistem kami.',
         ])->onlyInput('email');
     }
 

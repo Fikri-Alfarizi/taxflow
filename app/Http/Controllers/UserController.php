@@ -12,12 +12,31 @@ class UserController extends Controller
         // Only admin can access user management
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if (!auth()->user()->isAdmin()) {
             abort(403, 'Hanya admin yang dapat mengakses halaman ini.');
         }
-        $users = User::latest()->paginate(10);
+
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_aktif', $request->status);
+        }
+
+        $users = $query->latest()->paginate(10)->withQueryString();
         return view('user.index', compact('users'));
     }
 

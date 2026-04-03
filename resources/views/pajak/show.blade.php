@@ -211,7 +211,9 @@
                                     <td class="px-5 py-3 text-center whitespace-nowrap tabular-nums hidden sm:table-cell text-[9px]">{{ $doc->human_size }}</td>
                                     <td class="px-5 py-3 text-right whitespace-nowrap">
                                         <div class="flex items-center justify-end gap-2">
-                                            <a href="{{ Storage::url($doc->file_dokumen) }}" target="_blank" class="p-1.5 text-blue-600 dark:text-blue-500 hover:scale-110 transition-all"><i class="ph ph-download-simple text-base"></i></a>
+                                            <a href="{{ $doc->file_url }}" target="_blank" class="p-1.5 {{ $doc->is_remote ? 'text-blue-600' : 'text-slate-400' }} hover:scale-110 transition-all font-black text-[9px]" title="{{ $doc->is_remote ? 'Open API' : 'Download' }}">
+                                                <i class="ph {{ $doc->is_remote ? 'ph-arrow-square-out' : 'ph-download-simple' }} text-base"></i>
+                                            </a>
                                             <button @click="confirmDelete('{{ route('dokumen.destroy', $doc->id) }}', '{{ $doc->nama_dokumen }}')" class="p-1.5 text-slate-300 dark:text-slate-600 hover:text-rose-600 transition-all"><i class="ph ph-trash text-base"></i></button>
                                         </div>
                                     </td>
