@@ -1,10 +1,6 @@
 # TaxFlow
 
 <p align="center">
-  <img src="public/logos/favicon/favicon-32x32.png" alt="TaxFlow Logo" width="80" />
-</p>
-
-<p align="center">
   <strong>TaxFlow</strong> is a modern Laravel tax administration platform with a sleek responsive UI, approval workflow, document management, and real-time tax monitoring.
 </p>
 
