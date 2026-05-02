@@ -60,6 +60,10 @@ class PajakSeeder extends Seeder
                 'tanggal_jatuh_tempo' => $deadline,
                 'status' => $status,
                 'user_id' => $assignedUserId,
+                // NEW: Approval workflow fields (sesuai dokumentasi)
+                'status_verifikasi' => 'pending',
+                'status_validasi' => 'pending',
+                'status_approval' => 'pending',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -67,6 +71,11 @@ class PajakSeeder extends Seeder
             // Seed 1-3 documents for every 2nd tax record
             if ($i % 2 == 0) {
                 $docs = $apiService->generateMockDocuments($pajakId, rand(1, 3));
+                // Update documents with new validation fields
+                foreach ($docs as &$doc) {
+                    $doc['status_validasi'] = 'pending';
+                    $doc['tipe_file'] = 'pdf'; // Default to PDF
+                }
                 DB::table('dokumens')->insert($docs);
             }
 

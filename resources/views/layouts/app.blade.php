@@ -43,25 +43,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'TaxFlow') - TaxFlow Professional</title>
     
-    <!-- Comprehensive Favicon Branding -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo/favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo/favicon/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('logo/favicon/favicon-16x16.png') }}">
     <link rel="manifest" href="{{ asset('logo/favicon/site.webmanifest') }}">
     <link rel="shortcut icon" href="{{ asset('logo/favicon/favicon.ico') }}">
     
-    <!-- Zero-Latency Theme Ingestion -->
+    <!-- Apply dark mode BEFORE any content renders - prevent flash -->
     <script>
-        if (localStorage.getItem('isDark') === 'true' || (!('isDark' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        (function() {
+            const isDark = localStorage.getItem('isDark') === 'true' || 
+                (!('isDark' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
     </script>
+    <style>
+        /* Apply immediately before body renders */
+        html.dark { background-color: #0f172a; }
+        html:not(.dark) { background-color: #f8fafc; }
+    </style>
 
-    <!-- Alpine.js for interactivity -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Tailwind CSS with Dark Mode Config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -80,37 +85,158 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Phosphor Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" integrity="sha384-9ndCyUa6z6j9i6Bqa8WOKgYm7+z1D1TqT0n9tYfXc1xOd4JnP7IxOy4YTZP1Yd0h" crossorigin="anonymous">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     @livewireStyles
     @yield('head')
     
     <style>
-        body { font-family: 'Inter', sans-serif; font-size: 13px; }
+        body { font-family: 'Inter', sans-serif; font-size: 11px; }
         [x-cloak] { display: none !important; }
         * {
             -ms-overflow-style: none;
             scrollbar-width: none;
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                        border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-                        color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         *::-webkit-scrollbar { display: none; }
-        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-item-active {
-            background: linear-gradient(90deg, rgba(37, 99, 235, 0.06) 0%, rgba(37, 99, 235, 0) 100%);
-            border-left: 2.5px solid #2563eb;
-            color: #2563eb;
-            font-weight: 800;
+        
+        /* Force dark mode background - no gap */
+        html.dark, html.dark body {
+            background-color: #0f172a !important;
+            min-height: 100vh;
         }
-        .dark .nav-item-active { background: linear-gradient(90deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0) 100%); }
+        html:not(.dark), html:not(.dark) body {
+            background-color: #f8fafc !important;
+            min-height: 100vh;
+        }
+        
+        /* Smooth transitions but exclude body background */
+        body, body * {
+            transition: border-color 0.3s, color 0.3s, opacity 0.3s;
+        }
+        
+        .sidebar-transition { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Global font size for consistency */
+        body {
+            font-size: 10px;
+        }
+        .text-base {
+            font-size: 0.875rem; /* 14px */
+        }
+        .text-sm {
+            font-size: 0.75rem; /* 12px */
+        }
+        .text-xs {
+            font-size: 0.625rem; /* 10px */
+        }
+        /* Custom small text classes */
+        .text-[8px] {
+            font-size: 8px;
+        }
+        .text-[9px] {
+            font-size: 9px;
+        }
+        .text-[10px] {
+            font-size: 10px;
+        }
+        .text-[11px] {
+            font-size: 11px;
+        }
+        .text-[12px] {
+            font-size: 12px;
+        }
+        
+        /* Minimalist Flat Active State with iPhone Curves */
+        .nav-item-active {
+            background-color: rgba(37, 99, 235, 0.08);
+            color: #2563eb;
+            font-weight: 700;
+            border-radius: 16px;
+        }
+        .dark .nav-item-active { 
+            background-color: rgba(37, 99, 235, 0.15); 
+        }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 flex flex-col md:flex-row h-screen overflow-hidden">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 flex flex-col md:flex-row h-screen overflow-hidden min-h-screen">
 
-    <!-- Mobile Drawer Overlay -->
+    <!-- Global Loading Overlay -->
+    <div id="globalLoader" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] hidden flex-col items-center justify-center">
+        <div class="relative">
+            <div class="w-16 h-16 border-4 border-slate-200 dark:border-slate-700 rounded-full"></div>
+            <div class="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 rounded-full border-t-transparent animate-spin" style="animation-duration: 0.6s;"></div>
+        </div>
+        <p class="mt-4 text-white text-[10px] font-bold uppercase tracking-widest">Memuat...</p>
+    </div>
+
+    <script>
+        // Global loading functions
+        function showLoading() {
+            const loader = document.getElementById('globalLoader');
+            if (loader) {
+                loader.classList.remove('hidden');
+                loader.classList.add('flex');
+            }
+        }
+        function hideLoading() {
+            const loader = document.getElementById('globalLoader');
+            if (loader) {
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+            }
+        }
+        
+        // Auto hide after timeout (5 detik max)
+        let loadingTimeout;
+        function startLoadingTimer() {
+            clearTimeout(loadingTimeout);
+            loadingTimeout = setTimeout(hideLoading, 5000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Hanya form submit yang menuju ke server (method POST/PUT/DELETE)
+            document.addEventListener('submit', function(e) {
+                const target = e.target;
+                if (target.tagName === 'FORM' && !target.classList.contains('no-loading')) {
+                    const method = target.method?.toUpperCase();
+                    if (method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE') {
+                        showLoading();
+                        startLoadingTimer();
+                    }
+                }
+            }, true);
+            
+            // 2. Hanya link navigasi ke halaman lain (bukan anchor/javascript)
+            document.addEventListener('click', function(e) {
+                const target = e.target.closest('a');
+                if (target) {
+                    const href = target.getAttribute('href');
+                    const onclick = target.getAttribute('@click');
+                    // Hanya link yang menuju halaman baru (bukan #, javascript, atau Alpine)
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !onclick && !target.classList.contains('no-loading')) {
+                        showLoading();
+                        startLoadingTimer();
+                    }
+                }
+            }, true);
+            
+            // 3. Hide loading on page load complete
+            window.addEventListener('load', function() {
+                hideLoading();
+                clearTimeout(loadingTimeout);
+            });
+            
+            // 4. Hide on visibility change (tab switch)
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    hideLoading();
+                    clearTimeout(loadingTimeout);
+                }
+            });
+        });
+    </script>
+
     <div x-show="mobileSidebar" 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -119,185 +245,205 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          @click="mobileSidebar = false" 
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden" x-cloak></div>
+         class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-40 lg:hidden" x-cloak></div>
 
-    <!-- Sidebar (Desktop & Mobile Drawer) -->
     <aside 
-        class="sidebar-transition shrink-0 h-screen bg-white dark:bg-[#020617] border-r border-slate-100 dark:border-slate-800 z-50 overflow-hidden flex flex-col justify-between
+        class="sidebar-transition shrink-0 h-screen bg-transparent z-50 overflow-hidden flex flex-col justify-between
                fixed lg:relative inset-y-0 left-0 lg:translate-x-0"
         :class="[
-            sidebarCollapsed ? 'lg:w-16' : 'lg:w-60',
-            mobileSidebar ? 'translate-x-0 w-64 shadow-2xl' : '-translate-x-full lg:translate-x-0'
+            sidebarCollapsed ? 'lg:w-14' : 'lg:w-[13rem]',
+            mobileSidebar ? 'translate-x-0 w-52 bg-slate-50 dark:bg-slate-900' : '-translate-x-full lg:translate-x-0'
         ]"
     >
-        <div class="flex flex-col h-full">
-            <div class="h-14 flex items-center border-b border-slate-100 dark:border-slate-800 shrink-0 px-6 justify-between lg:justify-start"
-                 :class="sidebarCollapsed ? 'lg:justify-center lg:px-0' : 'lg:px-6'">
-                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 shrink-0">
+        <div class="flex flex-col h-full px-2">
+            <div class="h-12 flex items-center shrink-0 justify-between lg:justify-start px-2"
+                 :class="sidebarCollapsed ? 'lg:justify-center' : ''">
+                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2">
+                    <div class="w-6 h-6 shrink-0">
                         <img src="{{ asset('logo/logo_original.png') }}" class="w-full h-full object-contain dark:hidden" alt="TaxFlow Logo">
                         <img src="{{ asset('logo/logo_white.png') }}" class="w-full h-full object-contain hidden dark:block" alt="TaxFlow Logo White">
                     </div>
-                    <h1 class="text-base font-black text-slate-800 dark:text-white tracking-tighter" x-show="!sidebarCollapsed || mobileSidebar">Tax<span class="text-blue-600">Flow</span></h1>
+                    <h1 class="text-[12px] font-black text-slate-800 dark:text-white tracking-tighter" x-show="!sidebarCollapsed || mobileSidebar">Tax<span class="text-blue-600">Flow</span></h1>
                 </a>
                 <button @click="mobileSidebar = false" class="lg:hidden text-slate-400 hover:text-rose-500 transition-colors">
-                    <i class="ph ph-x text-xl"></i>
+                    <i class="ph ph-x text-lg"></i>
                 </button>
             </div>
 
-            <nav class="flex-1 overflow-y-auto pt-6 space-y-0.5">
-                <div class="px-6 mb-3" x-show="!sidebarCollapsed || mobileSidebar">
-                    <p class="text-[9px] font-black text-slate-300 dark:text-slate-500 uppercase tracking-widest leading-none">Konsol Utama</p>
+            <nav class="flex-1 overflow-y-auto pt-4 space-y-0.5">
+                <div class="px-3 mb-2" x-show="!sidebarCollapsed || mobileSidebar">
+                    <p class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Konsol</p>
                 </div>
 
                 <div class="space-y-0.5">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 py-2.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/20 {{ request()->routeIs('dashboard') ? 'nav-item-active' : 'text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-6'">
-                        <i class="ph ph-squares-four text-xl"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Dasbor Utama</span>
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('dashboard') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-squares-four text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Dasbor</span>
                     </a>
-                    <a href="{{ route('pajak.index') }}" wire:navigate class="flex items-center gap-3 py-2.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/20 {{ request()->routeIs('pajak.*') ? 'nav-item-active' : 'text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-6'">
-                        <i class="ph ph-files text-xl"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Basis Data Pajak</span>
+                    <a href="{{ route('pajak.index') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('pajak.*') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-files text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Basis Pajak</span>
                     </a>
-                    <a href="{{ route('monitoring.index') }}" wire:navigate class="flex items-center gap-3 py-2.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/20 {{ request()->routeIs('monitoring.*') ? 'nav-item-active' : 'text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-6'">
-                        <i class="ph ph-chart-line-up text-xl"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Log Pemantauan</span>
+                    <a href="{{ route('monitoring.index') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('monitoring.*') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-chart-line-up text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Pemantauan</span>
                     </a>
-                    <a href="{{ route('dokumen.index') }}" wire:navigate class="flex items-center gap-3 py-2.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/20 {{ request()->routeIs('dokumen.*') ? 'nav-item-active' : 'text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-6'">
-                        <i class="ph ph-folder-open text-xl"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Pusat Dokumen</span>
+                    <a href="{{ route('dokumen.index') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('dokumen.*') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-folder-open text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Dokumen</span>
                     </a>
 
-                    <div class="px-6 my-4 border-t border-slate-50 dark:border-slate-800 pt-4" x-show="!sidebarCollapsed || mobileSidebar">
-                        <p class="text-[9px] font-black text-slate-300 dark:text-slate-500 uppercase tracking-widest leading-none">Administrasi & Laporan</p>
+                    <div class="px-3 my-3 pt-3" x-show="!sidebarCollapsed || mobileSidebar">
+                        <p class="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Sistem</p>
                     </div>
 
                     @if(auth()->user()->isAdmin())
-                    <a href="{{ route('user.index') }}" wire:navigate class="flex items-center gap-3 py-2.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/20 {{ request()->routeIs('user.*') ? 'nav-item-active' : 'text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-6'">
-                        <i class="ph ph-users-three text-xl"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Kelola Akun</span>
+                    <a href="{{ route('user.index') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('user.*') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-users-three text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Kelola Akun</span>
+                    </a>
+                    <a href="{{ route('approval.dashboard') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('approval.*') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-check-circle text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Approval</span>
                     </a>
                     @endif
-                    <a href="{{ route('laporan.index') }}" wire:navigate class="flex items-center gap-3 py-2.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/20 {{ request()->routeIs('laporan.*') ? 'nav-item-active' : 'text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-6'">
-                        <i class="ph ph-chart-pie text-xl"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Arsip Laporan</span>
+                    <a href="{{ route('laporan.index') }}" wire:navigate class="flex items-center gap-2.5 py-2 transition-all hover:bg-slate-200/40 dark:hover:bg-slate-800/40 rounded-2xl {{ request()->routeIs('laporan.*') ? 'nav-item-active' : 'text-slate-500 dark:text-slate-400' }}" :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-chart-pie text-lg"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Laporan</span>
                     </a>
                 </div>
             </nav>
 
-            <div class="p-4 border-t border-slate-100/50 dark:border-slate-800/50 bg-slate-50/30 dark:bg-slate-900/10">
+            <div class="pb-4 pt-2">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="w-full flex items-center gap-3 py-2 px-3 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-slate-400 hover:text-rose-600 rounded-xl transition-all group"
-                            :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0' : 'px-3'">
-                        <i class="ph ph-power text-xl group-hover:rotate-12 transition-transform"></i>
-                        <span class="text-[12px] font-bold" x-show="!sidebarCollapsed || mobileSidebar">Keluar Sesi</span>
+                    <button type="submit" class="w-full flex items-center gap-2.5 py-2 hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 rounded-2xl transition-all group"
+                            :class="sidebarCollapsed && !mobileSidebar ? 'justify-center px-0 mx-1' : 'px-3'">
+                        <i class="ph ph-power text-lg group-hover:scale-110 transition-transform"></i>
+                        <span class="text-[10px] font-semibold" x-show="!sidebarCollapsed || mobileSidebar">Keluar Sesi</span>
                     </button>
                 </form>
             </div>
         </div>
     </aside>
 
-    <!-- Main Content Area -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-14 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
-            <div class="flex items-center gap-3 lg:gap-4">
-                <button @click="toggleSidebar()" class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-sm">
-                    <i class="ph ph-list text-xl"></i>
+        
+        <header class="h-12 bg-transparent flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
+            <div class="flex items-center gap-3">
+                <button @click="toggleSidebar()" class="w-7 h-7 rounded-[10px] bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-blue-600 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all">
+                    <i class="ph ph-list text-lg"></i>
                 </button>
-                <h2 class="text-[12px] md:text-sm font-black text-slate-800 dark:text-white tracking-widest uppercase truncate max-w-[150px] md:max-w-none">@yield('page-title', 'Ringkasan Utama')</h2>
+                <h2 class="hidden md:block text-[11px] font-bold text-slate-800 dark:text-white tracking-widest uppercase truncate lg:max-w-none">@yield('page-title', 'Ringkasan Utama')</h2>
                 
-                <!-- Global Actions Yield -->
-                <div class="flex items-center gap-1 md:gap-2 border-l border-slate-100 dark:border-slate-800 ml-2 md:ml-4 pl-2 md:pl-4">
+                <div class="flex items-center gap-1 md:gap-2 ml-1 md:ml-2 pl-1 md:pl-2">
                     @yield('actions')
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 lg:gap-3">
-                <!-- Theme Toggle -->
-                <button @click="toggleTheme()" class="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all group relative overflow-hidden">
-                    <i class="ph ph-sun text-xl transition-all duration-500" :class="isDark ? 'translate-y-8 opacity-0' : 'translate-y-0 opacity-100'"></i>
-                    <i class="ph ph-moon-stars text-xl absolute transition-all duration-500" :class="isDark ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'"></i>
+            <div class="flex items-center gap-2">
+                <button @click="toggleTheme()" class="w-7 h-7 rounded-[10px] bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all group relative overflow-hidden">
+                    <i class="ph ph-sun text-lg transition-all duration-500" :class="isDark ? 'translate-y-8 opacity-0' : 'translate-y-0 opacity-100'"></i>
+                    <i class="ph ph-moon-stars text-lg absolute transition-all duration-500" :class="isDark ? 'translate-y-0 opacity-100' : '-translate-y-8 opacity-0'"></i>
                 </button>
 
-                <!-- Notifications (Simplified on Mobile) -->
                 <div class="relative" x-data="notificationSystem()" x-init="initNotifications()">
-                    <button @click="open = !open" class="w-9 h-9 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all relative">
-                        <i class="ph ph-bell text-xl"></i>
+                    <button @click="open = !open" class="w-7 h-7 rounded-[10px] bg-slate-200/50 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all relative">
+                        <i class="ph ph-bell text-lg"></i>
                         <template x-if="count > 0">
-                            <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white dark:border-slate-900" x-text="count"></span>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-rose-500 text-transparent text-[0px] rounded-full" x-text="count"></span>
                         </template>
                     </button>
 
                     <div x-show="open" x-cloak @click.away="open = false" 
-                         x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                         class="absolute right-0 mt-3 w-72 lg:w-80 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden z-50">
-                        <div class="px-5 py-3 border-b border-slate-50 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800 flex justify-between items-center">
-                            <h4 class="text-[10px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">Notifikasi Sistem</h4>
-                            <span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[8px] font-black" x-text="count + ' BARU'"></span>
+                         x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                         class="absolute right-0 mt-3 w-64 lg:w-72 bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 rounded-[2rem] overflow-hidden z-50">
+                        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                            <h4 class="text-[9px] font-bold text-slate-800 dark:text-white uppercase tracking-widest leading-none">Notifikasi</h4>
+                            <span class="bg-blue-600 text-white px-2 py-0.5 rounded-full text-[8px] font-bold" x-text="count + ' BARU'"></span>
                         </div>
-                        <div class="max-h-[25rem] overflow-y-auto">
+                        <div class="max-h-[20rem] overflow-y-auto">
                             <template x-for="item in items" :key="item.id">
-                                <a :href="item.url" wire:navigate class="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-50 dark:border-slate-700 last:border-0 border-l-2" :class="'border-l-' + (item.type === 'danger' ? 'rose-500' : (item.type === 'warning' ? 'amber-500' : 'blue-500'))">
-                                    <div class="flex justify-between items-start">
-                                        <p class="text-[10px] font-black text-slate-800 dark:text-white uppercase truncate" x-text="item.title"></p>
-                                        <span class="text-[8px] font-bold text-slate-300 dark:text-slate-500 shrink-0" x-text="item.time_human"></span>
+                                <a :href="item.url" wire:navigate class="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-900 border-b border-slate-100/50 dark:border-slate-700/30 last:border-0 border-l-[3px]" :class="'border-l-' + (item.type === 'danger' ? 'rose-500' : (item.type === 'warning' ? 'amber-500' : 'blue-500'))">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <p class="text-[9px] font-bold text-slate-800 dark:text-white uppercase truncate" x-text="item.title"></p>
+                                        <span class="text-[8px] text-slate-400 shrink-0" x-text="item.time_human"></span>
                                     </div>
-                                    <p class="text-[9px] font-black italic mt-1 leading-tight" :class="'text-' + (item.type === 'danger' ? 'rose-600' : (item.type === 'warning' ? 'amber-600' : 'blue-600'))" x-text="item.message"></p>
+                                    <p class="text-[9px] font-medium leading-tight" :class="'text-' + (item.type === 'danger' ? 'rose-600' : (item.type === 'warning' ? 'amber-600' : 'blue-600'))" x-text="item.message"></p>
                                 </a>
                             </template>
                         </div>
                     </div>
                 </div>
 
-                <div class="w-8 h-8 lg:w-9 lg:h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-[10px] uppercase shadow-lg shadow-blue-100">
-                    {{ substr(auth()->user()->name, 0, 1) }}
+                <div class="relative" x-data="{ openProfile: false }">
+                    <button @click="openProfile = !openProfile" class="w-7 h-7 lg:w-8 lg:h-8 rounded-[12px] bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md text-white flex items-center justify-center font-bold text-[10px] uppercase ml-1 focus:outline-none">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </button>
+
+                    <div x-show="openProfile" x-cloak @click.away="openProfile = false" 
+                         x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                         class="absolute right-0 mt-3 w-48 bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden z-50">
+                        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50 flex flex-col">
+                            <span class="text-[10px] font-bold text-slate-800 dark:text-white uppercase tracking-widest leading-none truncate">{{ auth()->user()->name }}</span>
+                            <span class="text-[8px] text-slate-500 mt-1 truncate">{{ auth()->user()->email }}</span>
+                        </div>
+                        <div class="p-2">
+                            <form action="{{ route('logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-500 rounded-xl transition-all group">
+                                    <i class="ph ph-power text-sm group-hover:scale-110 transition-transform"></i>
+                                    <span class="text-[9px] font-black uppercase tracking-tight">Keluar Sesi</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto px-4 py-6 md:p-10 bg-slate-50 dark:bg-slate-950 transition-colors">
-            <div class="max-w-[1400px] mx-auto" x-init="$el.classList.add('page-fade-enter-active')" id="main-content">
+        <main class="flex-1 overflow-y-auto px-4 pb-6 md:px-8 md:pb-8 transition-colors">
+            <div class="w-full h-full mx-auto" x-init="$el.classList.add('page-fade-enter-active')" id="main-content">
                 
-                <!-- Premium Notification System -->
                 @if(session('success'))
                 <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" 
-                     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="mb-6 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl flex items-center justify-between shadow-sm shadow-emerald-100 dark:shadow-none">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-emerald-200 dark:shadow-none">
-                            <i class="ph ph-check-circle text-lg"></i>
+                     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                     class="mb-4 p-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200/50 dark:border-emerald-500/20 rounded-[1.5rem] flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                            <i class="ph ph-check-circle text-base"></i>
                         </div>
-                        <p class="text-[11px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">{{ session('success') }}</p>
+                        <p class="text-[10px] font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wide">{{ session('success') }}</p>
                     </div>
-                    <button @click="show = false" class="text-emerald-300 hover:text-emerald-500 transition-colors">
-                        <i class="ph ph-x-circle text-xl"></i>
+                    <button @click="show = false" class="text-emerald-500/50 hover:text-emerald-600 transition-colors mr-1">
+                        <i class="ph ph-x-circle text-lg"></i>
                     </button>
                 </div>
                 @endif
 
                 @if(session('error') || $errors->any())
                 <div x-data="{ show: true }" x-show="show" 
-                     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="mb-6 p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-800/50 rounded-2xl shadow-sm shadow-rose-100 dark:shadow-none">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-rose-200 dark:shadow-none">
-                                <i class="ph ph-warning-circle text-lg"></i>
+                     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                     class="mb-4 p-4 bg-rose-50 dark:bg-rose-500/10 border border-rose-200/50 dark:border-rose-500/20 rounded-[1.5rem]">
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0">
+                                <i class="ph ph-warning-circle text-base"></i>
                             </div>
-                            <p class="text-[11px] font-black text-rose-800 dark:text-rose-400 uppercase tracking-widest">Sistem Mendeteksi Galat</p>
+                            <p class="text-[10px] font-bold text-rose-800 dark:text-rose-400 uppercase tracking-wide">Sistem Mendeteksi Galat</p>
                         </div>
-                        <button @click="show = false" class="text-rose-300 hover:text-rose-500 transition-colors">
-                            <i class="ph ph-x-circle text-xl"></i>
+                        <button @click="show = false" class="text-rose-500/50 hover:text-rose-600 transition-colors">
+                            <i class="ph ph-x-circle text-lg"></i>
                         </button>
                     </div>
                     @if(session('error'))
-                        <p class="text-[10px] font-bold text-rose-600 dark:text-rose-400 ml-11 italic">{{ session('error') }}</p>
+                        <p class="text-[9px] font-medium text-rose-600 dark:text-rose-400 ml-9">{{ session('error') }}</p>
                     @endif
                     @if($errors->any())
-                        <ul class="ml-11 mt-1 space-y-1 list-disc list-inside text-rose-600/80 dark:text-rose-400/80 text-[9px] font-bold uppercase tracking-tight">
+                        <ul class="ml-9 mt-1 space-y-0.5 list-disc list-inside text-rose-600/80 dark:text-rose-400/80 text-[9px] uppercase tracking-tight">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -307,37 +453,33 @@
                 @endif
 
                 @yield('content')
+
             </div>
         </main>
 
     </div>
 
-    <!-- Premium Global Delete Modal -->
-    <div x-show="showDeleteModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-6" x-cloak>
-        <!-- Backdrop -->
+    <div x-show="showDeleteModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4" x-cloak>
         <div x-show="showDeleteModal" @click="showDeleteModal = false"
              x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
              x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-             class="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm"></div>
+             class="absolute inset-0 bg-slate-900/40 backdrop-blur-md"></div>
 
-        <!-- Modal Card -->
         <div x-show="showDeleteModal"
-             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-4"
-             class="relative bg-white dark:bg-slate-800 w-full max-w-sm rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+             class="relative bg-white dark:bg-slate-800 w-full max-w-xs rounded-[2.5rem] border border-slate-200/50 dark:border-slate-700/50 overflow-hidden text-center p-6">
             
-            <div class="p-8 text-center">
-                <div class="w-16 h-16 bg-rose-50 dark:bg-rose-950/30 rounded-full flex items-center justify-center mx-auto mb-6 border border-rose-100 dark:border-rose-900">
-                    <i class="ph ph-trash text-3xl text-rose-600 dark:text-rose-500 animate-pulse"></i>
-                </div>
-                <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-widest mb-2">Konfirmasi Hapus Permanen</h3>
-                <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 px-4 leading-relaxed mb-8 italic">
-                    Tindakan ini tidak dapat dibatalkan. Sistem akan menghapus data <span class="text-slate-800 dark:text-slate-200 font-black" x-text="deleteTitle"></span> dari database terpusat.
-                </p>
-                <div class="flex flex-col gap-3">
-                    <button @click="executeDelete()" class="w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-rose-100 dark:shadow-none">HAPUS SEKARANG PERMANEN</button>
-                    <button @click="showDeleteModal = false" class="w-full py-3 bg-slate-50 dark:bg-slate-900 text-slate-400 dark:text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-slate-100 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-all">BATALKAN PROSES</button>
-                </div>
+            <div class="w-14 h-14 bg-rose-50 dark:bg-rose-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-4 text-rose-500">
+                <i class="ph ph-trash text-2xl"></i>
+            </div>
+            <h3 class="text-[11px] font-bold text-slate-800 dark:text-white uppercase tracking-widest mb-1">Hapus Permanen</h3>
+            <p class="text-[9px] text-slate-500 dark:text-slate-400 leading-relaxed mb-6">
+                Data <span class="text-slate-800 dark:text-slate-200 font-bold" x-text="deleteTitle"></span> akan dihapus dari sistem.
+            </p>
+            <div class="flex flex-col gap-2">
+                <button @click="executeDelete()" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-[9px] font-bold uppercase tracking-widest transition-all">Hapus Sekarang</button>
+                <button @click="showDeleteModal = false" class="w-full py-3 bg-slate-100/50 dark:bg-slate-700/30 text-slate-500 dark:text-slate-400 rounded-2xl text-[9px] font-bold uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Batalkan</button>
             </div>
         </div>
     </div>
@@ -371,4 +513,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

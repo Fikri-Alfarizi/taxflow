@@ -35,7 +35,7 @@
             <div class="text-center md:text-left overflow-hidden w-full md:w-auto">
                 <h2 class="text-[12px] lg:text-sm font-black text-slate-800 dark:text-white uppercase tracking-tight leading-none mb-1 truncate px-4 md:px-0">{{ $pajak->nama_perusahaan }}</h2>
                 <div class="flex items-center justify-center md:justify-start gap-2">
-                    <span class="text-[8px] lg:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">ID: #{{ str_pad($pajak->id, 5, '0', STR_PAD_LEFT) }}</span>
+                    <span class="text-[8px] lg:text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">NPWP: {{ $pajak->npwp ?? '-' }}</span>
                     <span class="w-1 h-1 bg-slate-200 dark:bg-slate-700 rounded-full"></span>
                     <span class="text-[8px] lg:text-[9px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">{{ $pajak->jenis_pajak }}</span>
                 </div>
@@ -46,7 +46,7 @@
         <div class="w-full lg:w-auto overflow-x-auto scrollbar-hide py-1">
             <div class="flex items-center bg-slate-50 dark:bg-slate-900 p-1 rounded-xl border border-slate-100 dark:border-slate-700 min-w-max">
                 <button @click="activeTab = 'overview'" :class="activeTab === 'overview' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-100 dark:border-slate-700/50' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'" class="px-3 md:px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">Ringkasan</button>
-                <button @click="activeTab = 'dna'" :class="activeTab === 'dna' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-100 dark:border-slate-700/50' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'" class="px-3 md:px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">Profil DNA</button>
+                <button @click="activeTab = 'dna'" :class="activeTab === 'dna' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-100 dark:border-slate-700/50' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'" class="px-3 md:px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">Profil & Legal</button>
                 <button @click="activeTab = 'vault'" :class="activeTab === 'vault' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-100 dark:border-slate-700/50' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'" class="px-3 md:px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap">Brankas Digital ({{ $pajak->dokumens->count() }})</button>
                 <button @click="activeTab = 'audit'" :class="activeTab === 'audit' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm border border-slate-100 dark:border-slate-700/50' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600'" class="px-3 md:px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">Jejak Audit</button>
             </div>
@@ -63,10 +63,10 @@
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition-colors">
                         <p class="text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] mb-2">Status Kepatuhan</p>
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-900 border-t-emerald-500 animate-spin"></div>
+                            <div class="w-8 h-8 rounded-full border-2 border-slate-100 dark:border-slate-900 border-t-blue-500 {{ $pajak->status !== 'selesai' ? 'animate-spin' : '' }}"></div>
                             <div>
                                 <p class="text-[10px] font-black text-slate-800 dark:text-white uppercase leading-none">{{ strtoupper($pajak->status) }}</p>
-                                <p class="text-[8px] text-slate-400 font-bold uppercase mt-0.5">Input Terverifikasi</p>
+                                <p class="text-[8px] text-slate-400 font-bold uppercase mt-0.5">Siklus Aktif</p>
                             </div>
                         </div>
                     </div>
@@ -77,29 +77,29 @@
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition-colors">
                         <p class="text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] mb-2">Integritas Data</p>
-                        <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase leading-none">AUDITED_OK</p>
-                        <p class="text-[8px] text-slate-400 font-bold uppercase mt-0.5 truncate tracking-tighter">Source: {{ $pajak->id_transaksi_source ?? 'LOCAL' }}</p>
+                        <p class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase leading-none">VERIFIED_SECURE</p>
+                        <p class="text-[8px] text-slate-400 font-bold uppercase mt-0.5 truncate tracking-tighter">Source: {{ $pajak->id_transaksi_source ?? 'LOCAL_STORAGE' }}</p>
                     </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-all">
                     <div class="p-4 border-b border-slate-50 dark:border-slate-700/50 flex bg-slate-50/10 dark:bg-slate-900/10">
-                        <h4 class="text-[9px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">Ringkasan Narasi Sistem</h4>
+                        <h4 class="text-[9px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">Catatan Strategis Sistem</h4>
                     </div>
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                         <div>
-                            <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] mb-2">Informasi Operasional</label>
-                            <p class="text-[10px] md:text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed italic">"{{ $pajak->keterangan ?: 'Tidak ditemukan catatan khusus dalam siklus data ini.' }}"</p>
+                            <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] mb-2">Keterangan Operasional</label>
+                            <p class="text-[10px] md:text-[11px] font-bold text-slate-600 dark:text-slate-400 leading-relaxed italic">"{{ $pajak->keterangan ?: 'Tidak ada catatan naratif untuk periode ini.' }}"</p>
                         </div>
                         <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700 transition-colors">
-                             <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] mb-2">Statistik Telemetri</label>
+                             <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.2em] mb-2">Statistik Vault</label>
                              <div class="space-y-2.5">
                                  <div class="flex justify-between items-center text-[9px] font-black uppercase">
-                                     <span class="text-slate-400 tracking-tighter">Total Hari Sinkronisasi</span>
-                                     <span class="text-slate-800 dark:text-slate-200 tabular-nums">{{ (int) \Carbon\Carbon::parse($pajak->tanggal_input)->diffInDays(now()) }}H</span>
+                                     <span class="text-slate-400 tracking-tighter">Dokumen Terarsip</span>
+                                     <span class="text-slate-800 dark:text-slate-200 tabular-nums">{{ $pajak->dokumens->count() }} Files</span>
                                  </div>
                                  <div class="flex justify-between items-center text-[9px] font-black uppercase">
-                                     <span class="text-slate-400 tracking-tighter">Ekstrak Berat Data</span>
+                                     <span class="text-slate-400 tracking-tighter">Total Volume Aset</span>
                                      <span class="text-slate-800 dark:text-slate-200 tabular-nums">{{ $pajak->dokumens->sum('ukuran_file') ? round($pajak->dokumens->sum('ukuran_file')/1024, 2).' KB' : '0 B' }}</span>
                                  </div>
                              </div>
@@ -108,50 +108,74 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Entity DNA -->
-            <div x-show="activeTab === 'dna'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
-                <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-all">
+            <!-- Tab 2: Entity DNA (Extensive Profile) -->
+            <div x-show="activeTab === 'dna'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="space-y-4" x-cloak>
+                <!-- Profile Section -->
+                <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
                     <div class="p-4 border-b border-slate-50 dark:border-slate-700 bg-blue-50/5 dark:bg-slate-900/20">
-                        <h4 class="text-[9px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">DNA Identitas Korporasi</h4>
+                        <h4 class="text-[9px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">DNA Profil & Legalitas Korporasi</h4>
                     </div>
-                    <div class="p-6 lg:p-8 grid grid-cols-1 md:grid-cols-12 gap-y-6 md:gap-x-10">
-                        <div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+                    <div class="p-6 lg:p-8 space-y-8">
+                        <!-- Group 1: General Info -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
-                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5 leading-none">NPWP ID Resmi</label>
-                                <p class="text-[10px] md:text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tabular-nums tracking-tighter">{{ $pajak->npwp ?? 'DNA_EMPTY' }}</p>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">Status Legal</label>
+                                <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase">{{ $pajak->status_perusahaan ?? '-' }}</p>
                             </div>
                             <div>
-                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5 leading-none">Sektor Bisnis</label>
-                                <p class="text-[10px] md:text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase">{{ $pajak->kategori_usaha ?? 'GENERAL_BUSINESS' }}</p>
-                            </div>
-                            <div class="sm:col-span-2">
-                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5 leading-none">Domisili Korespondensi</label>
-                                <p class="text-[10px] md:text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed uppercase">{{ $pajak->alamat_lengkap ?? 'DNA_NO_ADDRESS' }}</p>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">Tahun Berdiri</label>
+                                <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 tabular-nums">{{ $pajak->tahun_berdiri ?? '-' }}</p>
                             </div>
                             <div>
-                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5 leading-none">Regional KPP Tax Office</label>
-                                <p class="text-[10px] md:text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">{{ $pajak->kpp_pratama ?? 'OFFLINE_NODE' }}</p>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">Website</label>
+                                <p class="text-[10px] font-black text-blue-600 lowercase">{{ $pajak->website ?? '-' }}</p>
                             </div>
                         </div>
 
-                        <div class="md:col-span-4 bg-slate-50 dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-700 transition-colors">
-                            <h5 class="text-[8px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest mb-4">Penanggung Jawab (PIC)</h5>
-                            <div class="space-y-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-[8px] font-black text-blue-600">PIC</div>
-                                    <div class="overflow-hidden">
-                                        <p class="text-[10px] font-black text-slate-800 dark:text-white uppercase leading-none truncate">{{ $pajak->nama_pic ?? 'SYSTEM_USER' }}</p>
-                                        <p class="text-[7px] font-bold text-slate-400 dark:text-slate-600 uppercase mt-1">Koordinator Hubungan</p>
-                                    </div>
-                                </div>
-                                <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <!-- Group 2: Key IDs -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-6 border-t border-slate-50 dark:border-slate-700/50">
+                            <div>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">NPWP</label>
+                                <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 tabular-nums tracking-tighter">{{ $pajak->npwp ?? 'NOT_SET' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">NIB (13 Digit)</label>
+                                <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 tabular-nums tracking-tighter">{{ $pajak->nib ?? 'NOT_SET' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">No. Akta Pendirian</label>
+                                <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase truncate" title="{{ $pajak->no_akta }}">{{ $pajak->no_akta ?? 'NOT_SET' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">SK Kemenkumham</label>
+                                <p class="text-[10px] font-black text-slate-800 dark:text-slate-200 uppercase truncate" title="{{ $pajak->sk_kemenkumham }}">{{ $pajak->sk_kemenkumham ?? 'NOT_SET' }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Group 3: Location & PIC -->
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 pt-6 border-t border-slate-50 dark:border-slate-700/50">
+                            <div class="md:col-span-7">
+                                <label class="block text-[7px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest mb-1.5">Alamat Korespondensi Formal</label>
+                                <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed uppercase">{{ $pajak->alamat_lengkap ?? 'NO_OFFICIAL_ADDRESS_DATA' }}</p>
+                            </div>
+                            <div class="md:col-span-5 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                                <p class="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-3">Koordinator Penanggung Jawab</p>
+                                <div class="space-y-3">
                                     <div class="flex justify-between items-center text-[9px] font-black uppercase">
-                                        <span class="text-slate-400 tracking-tighter">Line</span>
-                                        <span class="text-slate-800 dark:text-slate-300 tabular-nums truncate ml-2">{{ $pajak->kontak_pic ?: 'NONE' }}</span>
+                                        <span class="text-slate-400 tracking-tighter">Nama PIC</span>
+                                        <span class="text-slate-800 dark:text-slate-200 truncate ml-2">{{ $pajak->nama_pic ?? '-' }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[9px] font-black uppercase">
+                                        <span class="text-slate-400 tracking-tighter">Jabatan</span>
+                                        <span class="text-slate-800 dark:text-slate-200 truncate ml-2 text-[8px]">{{ $pajak->jabatan_pic ?? 'Staff' }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[9px] font-black uppercase">
+                                        <span class="text-slate-400 tracking-tighter">Kontak aktif</span>
+                                        <span class="text-slate-800 dark:text-slate-200 tabular-nums ml-2">{{ $pajak->kontak_pic ?? '-' }}</span>
                                     </div>
                                     <div class="flex justify-between items-center text-[9px] font-black uppercase">
                                         <span class="text-slate-400 tracking-tighter">Mails</span>
-                                        <span class="text-slate-800 dark:text-slate-300 truncate lowercase ml-2">{{ $pajak->email_pic ?: 'sys@taxflow.com' }}</span>
+                                        <span class="text-slate-800 dark:text-slate-200 lowercase ml-2 truncate">{{ $pajak->email_pic ?? '-' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -161,7 +185,7 @@
             </div>
 
             <!-- Tab 3: Digital Vault -->
-            <div x-show="activeTab === 'vault'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+            <div x-show="activeTab === 'vault'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-all">
                     <div class="px-5 py-3 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between">
                         <h4 class="text-[9px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">Arsip Digital Aset Pajak</h4>
@@ -230,7 +254,7 @@
             </div>
 
             <!-- Tab 4: Audit Trail -->
-            <div x-show="activeTab === 'audit'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+            <div x-show="activeTab === 'audit'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-all">
                     <div class="p-4 bg-slate-50/10 dark:bg-slate-900/10 border-b border-slate-50 dark:border-slate-700">
                         <h4 class="text-[9px] font-black text-slate-800 dark:text-white uppercase tracking-widest leading-none">Kronologi Jejak Telemetri Audit</h4>
@@ -299,21 +323,33 @@
                 </div>
             </div>
 
+            <!-- Objek Pajak Header -->
+            <div class="bg-blue-600 rounded-xl p-5 text-white shadow-xl shadow-blue-200 dark:shadow-none">
+                 <p class="text-[7px] font-black uppercase tracking-[0.3em] mb-1.5 opacity-70">Objek Pajak Utama</p>
+                 <h4 class="text-xs font-black uppercase mb-3">{{ $pajak->jenis_pajak }}</h4>
+                 <div class="space-y-2">
+                     <div class="flex justify-between items-center text-[9px] font-black uppercase">
+                         <span class="opacity-60">Periode Masa</span>
+                         <span>{{ $pajak->periode }}</span>
+                     </div>
+                     <div class="flex justify-between items-center text-[9px] font-black uppercase">
+                         <span class="opacity-60">KPP Regional</span>
+                         <span class="truncate ml-2">{{ $pajak->kpp_pratama ?? 'N/A' }}</span>
+                     </div>
+                 </div>
+            </div>
+
             <!-- Meta Data (High Density) -->
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-5 space-y-4 transition-colors">
                 <h5 class="text-[9px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest border-b border-slate-50 dark:border-slate-700 pb-2 leading-none">Metadata Siklus Hidup</h5>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center text-[9px] font-black uppercase">
-                        <span class="text-slate-400 tracking-tighter">Otorisator ID</span>
-                        <span class="text-slate-800 dark:text-slate-300 truncate ml-2">{{ $pajak->user->name ?? 'SYSTEM_KERNEL' }}</span>
+                        <span class="text-slate-400 tracking-tighter">Otorisator</span>
+                        <span class="text-slate-800 dark:text-slate-300 truncate ml-2">{{ $pajak->user->name ?? 'SYSTEM' }}</span>
                     </div>
                     <div class="flex justify-between items-center text-[9px] font-black uppercase">
                         <span class="text-slate-400 tracking-tighter">Telemetri Terakhir</span>
                         <span class="text-slate-800 dark:text-slate-300 tabular-nums ml-2 font-mono">{{ $pajak->updated_at->format('d/m/y H:i') }}</span>
-                    </div>
-                    <div class="flex justify-between items-center text-[9px] font-black uppercase">
-                        <span class="text-slate-400 tracking-tighter">Source Identity</span>
-                        <span class="text-slate-800 dark:text-slate-300 tracking-tighter ml-2 truncate">{{ $pajak->id_transaksi_source ?? 'IMPORT_LOCAL' }}</span>
                     </div>
                 </div>
             </div>

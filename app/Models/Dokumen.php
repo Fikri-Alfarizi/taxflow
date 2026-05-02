@@ -12,6 +12,17 @@ class Dokumen extends Model
         'file_dokumen',
         'ukuran_file',
         'tanggal_upload',
+        // NEW: Validation fields (sesuai UC-008)
+        'status_validasi',
+        'validated_by',
+        'tanggal_validasi',
+        'keterangan_validasi',
+        'tipe_file',
+    ];
+
+    protected $casts = [
+        'tanggal_upload' => 'datetime',
+        'tanggal_validasi' => 'datetime',
     ];
 
     protected $appends = ['file_url', 'is_remote'];
@@ -41,5 +52,11 @@ class Dokumen extends Model
     public function pajak()
     {
         return $this->belongsTo(Pajak::class);
+    }
+
+    // NEW: Validation relationship (sesuai UC-008)
+    public function validatedBy()
+    {
+        return $this->belongsTo(User::class, 'validated_by');
     }
 }

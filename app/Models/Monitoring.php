@@ -14,6 +14,10 @@ class Monitoring extends Model
         'tanggal_update',
     ];
 
+    protected $casts = [
+        'tanggal_update' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
