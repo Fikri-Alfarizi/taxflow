@@ -1,59 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TaxFlow
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/logos/favicon/favicon-32x32.png" alt="TaxFlow Logo" width="80" />
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>TaxFlow</strong> is a modern Laravel tax administration platform with a sleek responsive UI, approval workflow, document management, and real-time tax monitoring.
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <a href="https://github.com/Fikri-Alfarizi/taxflow/actions"><img src="https://img.shields.io/github/actions/workflow/status/Fikri-Alfarizi/taxflow/main.yml?label=CI&logo=github&style=flat-square" alt="CI Status" /></a>
+  <a href="https://img.shields.io/github/license/Fikri-Alfarizi/taxflow?style=flat-square"><img src="https://img.shields.io/github/license/Fikri-Alfarizi/taxflow?style=flat-square" alt="License" /></a>
+  <a href="https://img.shields.io/badge/Laravel-11.x-red?style=flat-square&logo=laravel"><img src="https://img.shields.io/badge/Laravel-11.x-red?style=flat-square&logo=laravel" alt="Laravel" /></a>
+  <a href="https://img.shields.io/badge/Vite-%5E7.0.7-blue?style=flat-square&logo=vite"><img src="https://img.shields.io/badge/Vite-%5E7.0.7-blue?style=flat-square&logo=vite" alt="Vite" /></a>
+  <a href="https://img.shields.io/badge/TailwindCSS-%5E4.0.0-teal?style=flat-square&logo=tailwindcss"><img src="https://img.shields.io/badge/TailwindCSS-%5E4.0.0-teal?style=flat-square&logo=tailwindcss" alt="TailwindCSS" /></a>
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Project Overview
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+TaxFlow is designed for Indonesian tax administrators and finance teams to manage tax records, approvals, documents, and reports with a modern dashboard experience.
 
-## Learning Laravel
+Built with:
+- Laravel (PHP) backend
+- Blade templates with TailwindCSS frontend styling
+- Vite-powered asset pipeline
+- Responsive layout optimized for desktop and tablet
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🎯 Core Features
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Modern Dashboard UI**: Clean cards, data tables, charts, and responsive page layout.
+- **Tax Record Management**: Create, edit, view, and delete tax entries.
+- **Approval Workflow**: ApprovalController and audit-ready approval flow for tax submissions.
+- **Document Management**: Upload, view, and validate tax documents with file metadata tracking.
+- **Monitoring & Status Tracking**: Real-time tax job monitoring with process status and user activity.
+- **Reports & Export**: Generate tax reports and export data using Excel-ready views.
+- **User Roles**: Admin and approval role support with middleware protection.
 
-## Laravel Sponsors
+## 🧩 UI Highlights
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+TaxFlow uses a modern, polished interface with:
 
-### Premium Partners
+- **Responsive navigation** built for desktop and mobile.
+- **Dashboard widgets** for quick status and KPI overview.
+- **Data-driven tables** for tax and monitoring records.
+- **Minimal, consistent styling** with Tailwind CSS.
+- **Friendly form layouts** for tax creation, editing, and approval.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📁 Repository Structure
 
-## Contributing
+- `app/Http/Controllers/` — Controller logic for tax, approval, and reporting.
+- `app/Models/` — Eloquent models for `Pajak`, `Dokumen`, `Monitoring`, `LaporanPajak`, and `CatatanPerbaikan`.
+- `database/migrations/` — Schema migrations for tax workflows and document validation.
+- `resources/views/` — Responsive Blade templates for dashboard, tax, laporan, approval, and errors.
+- `routes/web.php` — Web route definitions for the application.
+- `tests/Feature/ApprovalWorkflowTest.php` — Feature tests for approval scenarios.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## ⚙️ Installation
 
-## Code of Conduct
+1. Clone repository:
+   ```bash
+   git clone https://github.com/Fikri-Alfarizi/taxflow.git
+   cd taxflow
+   ```
+2. Install PHP dependencies:
+   ```bash
+   composer install
+   ```
+3. Install JavaScript dependencies:
+   ```bash
+   npm install
+   ```
+4. Copy environment file and configure:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+5. Configure database settings in `.env`.
+6. Run migrations and seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 💻 Development
 
-## Security Vulnerabilities
+- Start the application server:
+  ```bash
+  php artisan serve
+  ```
+- Start Vite dev server:
+  ```bash
+  npm run dev
+  ```
+- Build production assets:
+  ```bash
+  npm run build
+  ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🧪 Testing
 
-## License
+Run PHPUnit tests:
+```bash
+php artisan test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔐 Authorization & Administration
+
+- `AdminMiddleware` protects admin-only flows.
+- `ApprovalController` handles step-by-step approval actions.
+- Document uploads and tax record reviews are secured through middleware and user context.
+
+## 📈 Recommended Workflow
+
+1. Create tax entries in the `Pajak` module.
+2. Upload associated documents in `Dokumen`.
+3. Use the `Approval` dashboard to review and approve submissions.
+4. Monitor progress in `Monitoring` and generate reports via `LaporanPajak`.
+
+## 💡 Notes
+
+- The UI is built to feel modern and clean using Tailwind utility classes.
+- The project is ready for customization with additional role management and reporting features.
+- Use `resources/views/pajak/export_document.blade.php` and `resources/views/laporan/excel.blade.php` for export workflows.
+
+## 📌 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 📞 Contact
+
+For questions, feature requests, or guidance, connect via GitHub at [Fikri-Alfarizi](https://github.com/Fikri-Alfarizi).
